@@ -173,3 +173,95 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// // LOGIN
+// exports.login = async (req, res) => {
+//   try {
+//     const { userType, email, floorNumber, password } = req.body;
+
+//     if (!userType || !email || !password) {
+//       return res.status(400).json({
+//         message: "Missing required fields",
+//       });
+//     }
+
+//     let user;
+
+//     /* ================= OFFICE WORKER LOGIN ================= */
+//     if (userType === "office_worker") {
+//       if (!floorNumber) {
+//         return res.status(400).json({
+//           message: "Floor number is required for office worker",
+//         });
+//       }
+
+//       user = await User.findOne({
+//         userType: "office_worker",
+//         email,
+//         floorNumber,
+//       });
+
+//       if (!user) {
+//         return res.status(401).json({
+//           message: "Invalid email, floor number or password",
+//         });
+//       }
+
+//       const isMatch = await bcrypt.compare(password, user.password);
+//       if (!isMatch) {
+//         return res.status(401).json({
+//           message: "Invalid email, floor number or password",
+//         });
+//       }
+//     }
+
+//     /* ================= MANAGER LOGIN ================= */
+//     if (userType === "manager") {
+//       user = await User.findOne({
+//         userType: "manager",
+//         email,
+//       });
+
+//       if (!user) {
+//         return res.status(401).json({
+//           message: "Invalid email or password",
+//         });
+//       }
+
+//       const isMatch = await bcrypt.compare(password, user.password);
+//       if (!isMatch) {
+//         return res.status(401).json({
+//           message: "Invalid email or password",
+//         });
+//       }
+//     }
+
+//     /* ================= JWT TOKEN ================= */
+//     const token = jwt.sign(
+//       {
+//         _id: user._id,
+//         userType: user.userType,
+//         floorNumber: user.floorNumber,
+//         officeNumber: user.officeNumber,
+//       },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "1d" }
+//     );
+
+//     res.status(200).json({
+//       message: "Login successful",
+//       token,
+//       user: {
+//         userType: user.userType,
+//         email: user.email,
+//         floorNumber: user.floorNumber,
+//         officeNumber: user.officeNumber,
+//       },
+//     });
+
+//   } catch (error) {
+//     console.error("LOGIN ERROR:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+

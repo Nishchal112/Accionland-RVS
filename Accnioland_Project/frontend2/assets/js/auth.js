@@ -44,9 +44,20 @@ async function handleLogin() {
       return;
     }
 
-    // Save session
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("userType", userType);
+    // // Save session
+    // localStorage.setItem("token", data.token);
+    // localStorage.setItem("userType", userType);
+    // Decode JWT payload
+const payload = JSON.parse(atob(data.token.split(".")[1]));
+
+// Save session
+localStorage.setItem("token", data.token);
+localStorage.setItem("userType", payload.userType);
+
+// ✅ THESE FIX THE NULL ISSUE
+localStorage.setItem("floorNumber", payload.floorNumber);
+localStorage.setItem("officeNumber", payload.officeNumber);
+
 
     // index.html will handle redirect
     window.location.href = "../index.html";
