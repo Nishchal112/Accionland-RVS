@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Create Issue | Accnioland</title>
+<title>Create Issue | AccionLAND - RVS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <!-- Bootstrap -->
@@ -11,808 +11,407 @@
 <!-- Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 
-<link rel="stylesheet" href="../../assets/css/main.css">
-<link rel="stylesheet" href="../../assets/css/issue.css">
-
-
-
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
 <!-- PDF Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
 <style>
-body {
-  background: #f1f5f9;
-}
+  :root{
+    --bg1:#f8fafc;
+    --bg2:#eef2ff;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#64748b;
+    --border:#e5e7eb;
+    --shadow: 0 16px 40px rgba(15,23,42,0.08);
+    --shadow2: 0 22px 55px rgba(15,23,42,0.12);
 
-/* PDF Container */
-.pdf-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  background: #e5e7eb;
-  padding: 10px;
-  border-radius: 8px;
-}
-
-/* Canvas */
-#pdfCanvas {
-  max-width: 100%;
-  height: auto;
-  border: 2px solid #000;
-  touch-action: manipulation;
-}
-
-/* Structure card */
-.problem {
-  border: 1px solid #d1d5db;
-  padding: 12px;
-  border-radius: 8px;
-  margin-top: 12px;
-  background: #fff;
-}
-
-/* Legend */
-.legend span {
-  margin-right: 16px;
-  font-weight: 600;
-}
-
-/* Mobile tweaks */
-@media (max-width: 768px) {
-  .legend span {
-    display: block;
-    margin-bottom: 6px;
+    --brand1:#0b5ed7;
+    --brand2:#2563eb;
+    --brand3:#1d4ed8;
   }
-}
-/* ====================================================
-   CREATE ISSUE PAGE - Professional CSS
-   Color Palette: 60% Primary, 30% Secondary, 10% Accent
-   Primary: #E8F4F8 (60%) - Light sky blue background
-   Secondary: #4A6B8A (30%) - Calm blue-gray
-   Accent: #5D8A66 (10%) - Natural sage green
-==================================================== */
 
-:root {
-  /* Primary Color (60% of design) */
-  --primary-light: #E8F4F8;    /* Backgrounds */
-  --primary-medium: #D8ECF4;   /* Cards, containers */
-  --primary-dark: #C8E4F0;     /* Hover states */
-  
-  /* Secondary Color (30% of design) */
-  --secondary-light: #5D7A94;  /* Text, icons */
-  --secondary-medium: #4A6B8A; /* Buttons, important elements */
-  --secondary-dark: #3A5670;   /* Hover states, borders */
-  
-  /* Accent Color (10% of design) */
-  --accent-light: #6D9A7A;     /* Success states, highlights */
-  --accent-medium: #5D8A66;    /* Success buttons */
-  --accent-dark: #4D7A56;      /* Hover states */
-  
-  /* Neutral Colors */
-  --white: #FFFFFF;
-  --gray-light: #F8FAFC;
-  --gray-medium: #E2E8F0;
-  --gray-dark: #94A3B8;
-  --text-primary: #1E293B;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  
-  /* Status Colors */
-  --status-crack: #EF4444;     /* Red for cracks */
-  --status-dampness: #3B82F6;  /* Blue for dampness */
-  --status-both: #10B981;      /* Green for both */
-  --status-other: #6B7280;     /* Gray for other */
-  
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(30, 41, 59, 0.04);
-  --shadow-md: 0 4px 12px rgba(30, 41, 59, 0.08);
-  --shadow-lg: 0 8px 24px rgba(30, 41, 59, 0.12);
-  --shadow-xl: 0 12px 32px rgba(30, 41, 59, 0.16);
-  
-  /* Border Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-full: 999px;
-  
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Spacing */
-  --space-xs: 0.5rem;
-  --space-sm: 0.75rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-}
-
-/* ================= BASE RESET ================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
-  background: linear-gradient(135deg, var(--primary-light) 0%, #F0F9FF 100%);
-  color: var(--text-primary);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* ================= NAVBAR - Professional Design ================= */
-.navbar {
-  background: linear-gradient(135deg, var(--secondary-medium) 0%, var(--secondary-dark) 100%);
-  padding: var(--space-md) var(--space-lg);
-  box-shadow: var(--shadow-lg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  backdrop-filter: blur(10px);
-}
-
-.navbar-brand {
-  font-weight: 700;
-  font-size: 1.25rem;
-  background: linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  letter-spacing: -0.02em;
-}
-
-.navbar .text-white {
-  font-size: 0.95rem;
-  opacity: 0.95;
-  font-weight: 500;
-  display: flex;
-  gap: var(--space-sm);
-  align-items: center;
-}
-
-.navbar .text-white strong {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* ================= MAIN CONTAINER ================= */
-.container.my-4 {
-  padding: var(--space-lg);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* ================= ALERT STYLES ================= */
-#noBasePdf.alert {
-  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-  border: 2px solid #F59E0B;
-  color: #92400E;
-  border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  margin-bottom: var(--space-lg);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  box-shadow: var(--shadow-md);
-  animation: slideIn 0.3s ease-out;
-}
-
-#noBasePdf.alert::before {
-  content: "⚠️";
-  font-size: 1.25rem;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+  *{ box-sizing:border-box; }
+  body{
+    font-family:"Inter",sans-serif;
+    background: radial-gradient(1200px 700px at 20% 0%, #dbeafe 0%, transparent 55%),
+                radial-gradient(1200px 700px at 80% 0%, #e0e7ff 0%, transparent 55%),
+                linear-gradient(180deg,var(--bg1),var(--bg2));
+    color:var(--text);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  /* ===== TOPBAR ===== */
+  .topbar{
+    background: linear-gradient(90deg, var(--brand1), var(--brand2));
+    box-shadow: 0 14px 40px rgba(2,6,23,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    position: sticky;
+    top: 0;
+    z-index: 50;
   }
-}
 
-/* ================= LEGEND SECTION - Beautiful Design ================= */
-.legend.mb-3 {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-md) var(--space-lg);
-  margin-bottom: var(--space-lg);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-md);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-medium);
-  animation: fadeIn 0.5s ease-out;
-}
-
-.legend span {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: var(--space-sm);
-  border-radius: var(--radius-md);
-  background: var(--gray-light);
-  transition: all var(--transition-fast);
-}
-
-.legend span:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
-.legend span[style*="color:red"] {
-  color: var(--status-crack);
-  border-left: 4px solid var(--status-crack);
-}
-
-.legend span[style*="color:blue"] {
-  color: var(--status-dampness);
-  border-left: 4px solid var(--status-dampness);
-}
-
-.legend span[style*="color:green"] {
-  color: var(--status-both);
-  border-left: 4px solid var(--status-both);
-}
-
-.legend span[style*="color:black"] {
-  color: var(--status-other);
-  border-left: 4px solid var(--status-other);
-}
-
-.legend span::before {
-  content: "●";
-  font-size: 1.5rem;
-}
-
-/* ================= ADD STRUCTURE BUTTON ================= */
-.btn-outline-primary.w-100.mb-3 {
-  background: var(--white);
-  border: 2px dashed var(--secondary-medium);
-  color: var(--secondary-medium);
-  padding: var(--space-lg);
-  border-radius: var(--radius-lg);
-  font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: var(--space-xl) !important;
-  transition: all var(--transition-normal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  box-shadow: var(--shadow-md);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-outline-primary.w-100.mb-3:hover {
-  background: linear-gradient(135deg, var(--primary-medium) 0%, var(--primary-light) 100%);
-  border-color: var(--secondary-dark);
-  color: var(--secondary-dark);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
-
-.btn-outline-primary.w-100.mb-3::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s;
-}
-
-.btn-outline-primary.w-100.mb-3:hover::before {
-  left: 100%;
-}
-
-/* ================= STRUCTURE CARDS ================= */
-#problems {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
-}
-
-.problem {
-  background: linear-gradient(135deg, var(--white) 0%, var(--gray-light) 100%);
-  border: 1px solid var(--gray-medium);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-normal);
-  position: relative;
-  overflow: hidden;
-  animation: cardAppear 0.4s ease-out;
-}
-
-.problem:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--secondary-light);
-}
-
-.problem::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--secondary-medium), var(--accent-medium));
-  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-}
-
-.problem h6 {
-  color: var(--secondary-dark);
-  font-size: 1.1rem;
-  margin-bottom: var(--space-md);
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-.problem h6::before {
-  content: "🏗️";
-  font-size: 1.2rem;
-}
-
-.problem .form-select,
-.problem .form-control {
-  border: 2px solid var(--gray-medium);
-  border-radius: var(--radius-md);
-  padding: 0.75rem;
-  font-size: 0.9rem;
-  margin-bottom: var(--space-sm);
-  background: var(--white);
-  transition: all var(--transition-fast);
-}
-
-.problem .form-select:focus,
-.problem .form-control:focus {
-  border-color: var(--secondary-medium);
-  box-shadow: 0 0 0 3px rgba(74, 107, 138, 0.1);
-  outline: none;
-}
-
-.problem textarea.form-control {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.problem input[type="file"] {
-  padding: 0.5rem;
-  background: var(--gray-light);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-}
-
-.problem input[type="file"]::-webkit-file-upload-button {
-  background: var(--secondary-medium);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
-  margin-right: 1rem;
-  cursor: pointer;
-  transition: background var(--transition-fast);
-}
-
-.problem input[type="file"]::-webkit-file-upload-button:hover {
-  background: var(--secondary-dark);
-}
-
-/* ================= HR DIVIDER ================= */
-hr {
-  margin: var(--space-xl) 0;
-  border: none;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--gray-medium), transparent);
-}
-
-/* ================= PDF CONTROLS ================= */
-.d-flex.gap-2.mb-2 {
-  background: var(--white);
-  padding: var(--space-sm);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  margin-bottom: var(--space-lg);
-  display: inline-flex;
-  gap: var(--space-sm);
-}
-
-.d-flex.gap-2.mb-2 .btn-secondary {
-  background: var(--secondary-medium);
-  border: none;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.d-flex.gap-2.mb-2 .btn-secondary:hover {
-  background: var(--secondary-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ================= PDF VIEWER - Professional Design ================= */
-.pdf-wrapper {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-xl);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--gray-medium);
-  position: relative;
-  overflow: hidden;
-  min-height: 500px;
-}
-
-.pdf-wrapper::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--secondary-medium), var(--accent-medium));
-}
-
-#pdfCanvas {
-  width: 100% !important;
-  height: auto !important;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--gray-medium);
-  box-shadow: var(--shadow-sm);
-  display: block;
-  margin: 0 auto;
-  cursor: crosshair;
-  transition: transform var(--transition-normal);
-}
-
-#pdfCanvas:hover {
-  transform: scale(1.01);
-}
-
-/* ================= SUBMIT BUTTON ================= */
-.btn-success.w-100.mt-3 {
-  background: linear-gradient(135deg, var(--accent-medium) 0%, var(--accent-dark) 100%);
-  border: none;
-  color: white;
-  padding: var(--space-lg);
-  border-radius: var(--radius-lg);
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin-top: var(--space-xl) !important;
-  transition: all var(--transition-normal);
-  box-shadow: 0 8px 32px rgba(93, 138, 102, 0.3);
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-.btn-success.w-100.mt-3:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 40px rgba(93, 138, 102, 0.4);
-  background: linear-gradient(135deg, var(--accent-dark) 0%, var(--accent-medium) 100%);
-}
-
-.btn-success.w-100.mt-3::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s;
-}
-
-.btn-success.w-100.mt-3:hover::after {
-  left: 100%;
-}
-
-/* ================= OUTPUT AREA ================= */
-pre#output {
-  background: var(--text-primary);
-  color: var(--accent-light);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-top: var(--space-xl);
-  font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 0.875rem;
-  overflow-x: auto;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-dark);
-}
-
-/* ================= ANIMATIONS ================= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-weight:900;
+    letter-spacing:0.4px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-@keyframes cardAppear {
-  0% {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
+  .brand-logo{
+    height:40px;
+    width:auto;
+    border-radius:10px;
+    object-fit:contain;
+    background: rgba(255,255,255,0.18);
+    padding:0px;
   }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
 
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
+  .top-right-meta{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:800;
+    color:#fff;
+    opacity:0.95;
+    flex-wrap:wrap;
   }
-  50% {
-    opacity: 0.7;
-  }
-}
 
-/* ================= MOBILE RESPONSIVE DESIGN ================= */
-@media (max-width: 768px) {
-  :root {
-    --space-lg: 1rem;
-    --space-xl: 1.5rem;
+  .meta-pill{
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    backdrop-filter: blur(6px);
   }
-  
-  .navbar {
-    padding: var(--space-md);
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-  
-  .navbar .text-white {
-    flex-direction: column;
-    gap: var(--space-xs);
-    align-items: flex-start;
-  }
-  
-  .legend.mb-3 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
-    padding: var(--space-md);
-  }
-  
-  #problems {
-    grid-template-columns: 1fr;
-    gap: var(--space-md);
-  }
-  
-  .problem {
-    padding: var(--space-md);
-  }
-  
-  .pdf-wrapper {
-    padding: var(--space-md);
-    min-height: 400px;
-  }
-  
-  .d-flex.gap-2.mb-2 {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .d-flex.gap-2.mb-2 .btn-secondary {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .btn-success.w-100.mt-3 {
-    padding: var(--space-lg);
-    font-size: 1rem;
-  }
-}
 
-/* ================= TABLET RESPONSIVE DESIGN ================= */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .legend.mb-3 {
-    grid-template-columns: repeat(2, 1fr);
+  /* ===== PAGE WRAP ===== */
+  .page-wrap{
+    max-width: 1150px;
+    margin: 18px auto 60px auto;
+    padding: 0 12px;
   }
-  
-  #problems {
-    grid-template-columns: repeat(2, 1fr);
+
+  /* ===== ALERT ===== */
+  .soft-alert{
+    border-radius: 14px;
+    border: 1px solid #fde68a;
+    background: linear-gradient(180deg,#fffbeb,#fff7ed);
+    color:#92400e;
+    font-weight:800;
+    box-shadow: 0 10px 25px rgba(2,6,23,0.06);
   }
-  
-  .pdf-wrapper {
-    min-height: 600px;
+
+  /* ===== LEGEND ===== */
+  .legend-wrap{
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+    padding: 12px;
+    margin-bottom: 14px;
   }
-}
 
-/* ================= DESKTOP ENHANCEMENTS ================= */
-@media (min-width: 1025px) {
-  .container.my-4 {
-    padding: var(--space-xl) var(--space-lg);
+  .legend-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:900;
+    margin-bottom:10px;
   }
-  
-  .pdf-wrapper {
-    min-height: 700px;
-    max-height: 75vh;
-    overflow-y: auto;
+
+  .legend-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
   }
-  
-  #pdfCanvas {
-    max-width: 90%;
+
+  .legend-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border-radius: 999px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-weight:800;
+    font-size: 13px;
+    box-shadow: 0 10px 22px rgba(15,23,42,0.06);
   }
-  
-  /* Hover effects for desktop only */
-  .problem:hover::before {
-    width: 6px;
-    transition: width var(--transition-normal);
+
+  .dot{
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    display:inline-block;
   }
-  
-  .legend span {
-    cursor: pointer;
+
+  .dot-red{ background:#ef4444; }
+  .dot-blue{ background:#2563eb; }
+  .dot-green{ background:#16a34a; }
+  .dot-brown{ background:#8b4513; }
+  .dot-pink{ background:#fb7185; }
+  .dot-black{ background:#111827; }
+
+  /* ===== BUTTONS ===== */
+  .btn{
+    border-radius: 14px;
+    font-weight: 800;
+    padding: 10px 14px;
   }
-}
 
-/* ================= SCROLLBAR STYLING ================= */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--primary-light);
-  border-radius: var(--radius-full);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--secondary-light);
-  border-radius: var(--radius-full);
-  border: 2px solid var(--primary-light);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-medium);
-}
-
-/* ================= PRINT STYLES ================= */
-@media print {
-  .navbar,
-  .d-flex.gap-2.mb-2,
-  .btn-success.w-100.mt-3,
-  pre#output {
-    display: none !important;
+  .btn-primary{
+    background: linear-gradient(90deg, var(--brand2), var(--brand3));
+    border: none;
+    box-shadow: 0 14px 30px rgba(37,99,235,0.25);
   }
-  
-  .pdf-wrapper {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    page-break-inside: avoid;
+  .btn-primary:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 18px 36px rgba(37,99,235,0.30);
   }
-  
-  .problem {
-    page-break-inside: avoid;
-    border: 1px solid #ddd;
-    box-shadow: none;
+
+  .btn-outline-primary{
+    border: 1px solid #c7d2fe;
+    background: #fff;
   }
-}
 
-/* ================= UTILITY CLASSES ================= */
-.mb-3 {
-  margin-bottom: var(--space-lg) !important;
-}
+  .btn-success{
+    background: linear-gradient(90deg,#16a34a,#22c55e);
+    border: none;
+    box-shadow: 0 14px 30px rgba(34,197,94,0.22);
+  }
 
-.mt-3 {
-  margin-top: var(--space-lg) !important;
-}
+  /* ===== PROBLEM CARD ===== */
+  .problem{
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg,#ffffff,#f8fafc);
+    box-shadow: var(--shadow);
+    padding: 14px;
+    margin-top: 14px;
+    transition: all 0.25s ease;
+    animation: popIn 0.25s ease;
+  }
+  .problem:hover{
+    transform: translateY(-2px);
+    box-shadow: var(--shadow2);
+  }
 
-.w-100 {
-  width: 100% !important;
-}
+  @keyframes popIn{
+    from{ transform: translateY(8px); opacity:0; }
+    to{ transform: translateY(0); opacity:1; }
+  }
 
-.d-none {
-  display: none !important;
-}
+  .problem-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom: 10px;
+  }
 
-/* ================= FOCUS VISIBILITY ================= */
-*:focus {
-  outline: 2px solid var(--secondary-medium);
-  outline-offset: 2px;
-}
+  .problem-title{
+    font-weight: 900;
+    font-size: 15px;
+    margin:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
 
-*:focus:not(:focus-visible) {
-  outline: none;
-}
+  .badge-soft{
+    font-size: 12px;
+    font-weight: 900;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--muted);
+  }
+
+  .form-select, .form-control{
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    font-weight: 700;
+    box-shadow: none !important;
+  }
+  .form-select:focus, .form-control:focus{
+    border-color:#60a5fa;
+  }
+
+  .hint{
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-top: 8px;
+  }
+
+  /* ===== PDF CONTROLS ===== */
+  .pdf-controls{
+    display:flex;
+    gap:10px;
+    margin: 14px 0 10px 0;
+    position: sticky;
+    top: 70px;
+    z-index: 40;
+    padding: 10px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
+  }
+
+  .pdf-controls .btn{
+    flex:1;
+  }
+
+  /* ===== PDF VIEW ===== */
+  .pdf-wrapper{
+    background: linear-gradient(180deg,#0b1220,#0f172a);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 22px 60px rgba(2,6,23,0.35);
+    overflow-x: auto;
+  }
+
+  #pdfCanvas{
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.08);
+    background: #111827;
+    max-width: 100%;
+    height: auto;
+    touch-action: manipulation;
+  }
+
+  .mark-tip{
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid #dbeafe;
+    background: linear-gradient(180deg,#eff6ff,#ffffff);
+    box-shadow: 0 10px 25px rgba(15,23,42,0.06);
+    font-weight: 800;
+    color:#1e3a8a;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  /* ===== OUTPUT ===== */
+  #output{
+    border-radius: 16px;
+    border: 1px solid rgba(16,185,129,0.35);
+    background: #0b1220 !important;
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 768px){
+    .brand-logo{ height: 34px; }
+    .top-right-meta{ justify-content:flex-end; }
+    .pdf-controls{ top: 62px; }
+  }
 </style>
 </head>
 
 <body>
 
 <!-- TOP BAR -->
-<nav class="navbar navbar-dark bg-primary px-3">
-  <span class="navbar-brand fw-semibold">
-    Accnioland – Create Issue
-  </span>
-  <span class="text-white">
-    <strong id="floorText"></strong> |
-    <strong id="officeText"></strong>
-  </span>
+<nav class="navbar navbar-dark px-3 topbar">
+  <div class="d-flex align-items-center justify-content-between w-100">
+    <span class="navbar-brand brand">
+      <!-- ✅ Update logo path if needed -->
+      <img src="../manager/logo.png" alt="AccionLAND Logo" class="brand-logo">
+      AccionLAND - RVS
+    </span>
+
+    <div class="top-right-meta">
+      <span class="meta-pill">
+        <i class="bi bi-layers-fill"></i>
+        <strong id="floorText"></strong>
+      </span>
+      <span class="meta-pill">
+        <i class="bi bi-door-open-fill"></i>
+        <strong id="officeText"></strong>
+      </span>
+    </div>
+  </div>
 </nav>
 
-<div class="container my-4">
+<div class="page-wrap">
 
-<!-- BASE PDF WARNING -->
-<div id="noBasePdf" class="alert alert-warning d-none">
-  ⚠ Base floor plan not uploaded for your floor.
+  <!-- BASE PDF WARNING -->
+  <div id="noBasePdf" class="alert soft-alert d-none">
+    ⚠ Base floor plan not uploaded for your floor.
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend-wrap">
+    <div class="legend-title">
+      <i class="bi bi-palette-fill text-primary"></i>
+      Marking Legend
+    </div>
+
+    <div class="legend-grid">
+      <span class="legend-pill"><span class="dot dot-red"></span> Crack</span>
+      <span class="legend-pill"><span class="dot dot-blue"></span> Leakage</span>
+      <span class="legend-pill"><span class="dot dot-green"></span> Dampness</span>
+      <span class="legend-pill"><span class="dot dot-brown"></span> Crack + Dampness</span>
+      <span class="legend-pill"><span class="dot dot-pink"></span> Dampness + Leakage</span>
+      <span class="legend-pill"><span class="dot dot-black"></span> Other</span>
+    </div>
+  </div>
+
+  <button class="btn btn-primary w-100 mb-2" onclick="addProblem()">
+    <i class="bi bi-plus-circle-fill me-1"></i> Add Structure Problem
+  </button>
+
+  <div id="problems"></div>
+
+  <div class="mark-tip">
+    <i class="bi bi-info-circle-fill"></i>
+    <div>
+      Tap / Click on the PDF to add a numbered mark for the <strong>last added structure</strong>.
+      Use <strong>Prev/Next</strong> to mark on different pages.
+    </div>
+  </div>
+
+  <!-- PDF CONTROLS -->
+  <div class="pdf-controls">
+    <button class="btn btn-outline-primary" onclick="prevPage()">
+      <i class="bi bi-arrow-left-circle"></i> Prev
+    </button>
+    <button class="btn btn-outline-primary" onclick="nextPage()">
+      Next <i class="bi bi-arrow-right-circle"></i>
+    </button>
+  </div>
+
+  <!-- PDF VIEW -->
+  <div class="pdf-wrapper">
+    <canvas id="pdfCanvas"></canvas>
+  </div>
+
+  <button class="btn btn-success w-100 mt-3" onclick="submitIssue()">
+    <i class="bi bi-check2-circle me-1"></i> Submit Issue
+  </button>
+
+  <pre id="output" class="text-success p-3 mt-3"></pre>
+
 </div>
 
-<!-- LEGEND -->
-<div class="legend mb-3">
-  <span style="color:red">Red = Crack</span>
-  <span style="color:blue">Blue = Dampness</span>
-  <span style="color:green">Green = Crack + Dampness</span>
-  <span style="color:black">Black = Other</span>
-</div>
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<button class="btn btn-outline-primary w-100 mb-3" onclick="addProblem()">
-  ➕ Add Structure Problem
-</button>
-
-<div id="problems"></div>
-
-<hr />
-
-<!-- PDF CONTROLS -->
-
-<div class="d-flex gap-2 mb-2">
-  <button class="btn btn-secondary" onclick="prevPage()">⬅ Prev</button>
-  <button class="btn btn-secondary" onclick="nextPage()">Next ➡</button>
-</div>
-
-<!-- PDF VIEW -->
-<div class="pdf-wrapper">
-  <canvas id="pdfCanvas"></canvas>
-<!-- 
-  <div class="pdf-nav">
-    <button onclick="prevPage()">← Prev</button>
-    <button onclick="nextPage()">Next →</button>
-  </div> -->
-</div>
-
-<button class="btn btn-success w-100 mt-3" onclick="submitIssue()">
-  ✅ Submit Issue
-</button>
-
-<pre id="output" class="bg-dark text-success p-2 mt-3"></pre>
-
-</div>
-
-<!-- <script>
+<script>
 /* ================= CONFIG ================= */
 const API = "http://localhost:5000";
 const token = localStorage.getItem("token");
@@ -822,21 +421,11 @@ if (!token) {
 }
 
 /* ================= USER INFO ================= */
-const userInfoRaw = localStorage.getItem("userInfo");
-
-if (!userInfoRaw) {
-  alert("Session expired. Please login again.");
-  localStorage.clear();
-  location.href = "../login.html";
-}
-
-const userInfo = JSON.parse(userInfoRaw);
-
 document.getElementById("floorText").innerText =
-  "Floor: " + (userInfo.floorNumber ?? "N/A");
+  "Floor: " + localStorage.getItem("floorNumber");
 
 document.getElementById("officeText").innerText =
-  "Office: " + (userInfo.officeNumber ?? "N/A");
+  "Office: " + localStorage.getItem("officeNumber");
 
 /* ================= STATE ================= */
 let problems = [];
@@ -877,51 +466,61 @@ window.addProblem = function () {
   const div = document.createElement("div");
   div.className = "problem";
   div.innerHTML = `
-    <h6>Structure ${i + 1}</h6>
+    <div class="problem-head">
+      <h6 class="problem-title">
+        <i class="bi bi-building-fill text-primary"></i>
+        Structure ${i + 1}
+      </h6>
+      <span class="badge-soft">Tap PDF to mark</span>
+    </div>
 
-    <select class="form-select mb-1" onchange="problems[${i}].structureType=this.value">
+    <select class="form-select mb-2" onchange="problems[${i}].structureType=this.value">
       <option value="">Structure</option>
       <option>wall</option><option>beam</option><option>column</option>
       <option>roof</option><option>floor</option><option>facade</option><option>other</option>
     </select>
 
-    <select class="form-select mb-1" onchange="problems[${i}].direction=this.value">
+    <select class="form-select mb-2" onchange="problems[${i}].direction=this.value">
       <option value="">Direction</option>
-      <option>north</option><option>south</option><option>east</option><option>west</option>
+      <option>north</option><option>south</option><option>east</option><option>west</option><option>north-west</option><option>north-east</option><option>south-west</option><option>south-east</option>
     </select>
 
-    <select class="form-select mb-1" onchange="handleIssue(${i},this.value)">
+    <select class="form-select mb-2" onchange="handleIssue(${i},this.value)">
       <option value="">Issue</option>
       <option value="crack">Crack</option>
       <option value="dampness">Dampness</option>
+      <option value="leakage">Leakage</option>
       <option value="crack_dampness">Crack + Dampness</option>
+      <option value="dampness_leakage">Dampness + Leakage</option>
       <option value="other">Other</option>
     </select>
 
-    <select id="crack_${i}" class="form-select mb-1 d-none"
+    <select id="crack_${i}" class="form-select mb-2 d-none"
       onchange="problems[${i}].crackType=this.value">
       <option value="">Crack Type</option>
       <option>minor</option><option>medium</option><option>severe</option>
     </select>
 
-    <select id="damp_${i}" class="form-select mb-1 d-none"
+    <select id="damp_${i}" class="form-select mb-2 d-none"
       onchange="problems[${i}].dampnessLevel=this.value">
       <option value="">Dampness Level</option>
       <option>low</option><option>medium</option><option>high</option>
     </select>
 
-    <select class="form-select mb-1"
+    <select class="form-select mb-2"
       onchange="problems[${i}].riskLevel=this.value">
       <option value="">Risk Level</option>
       <option>low</option><option>medium</option><option>high</option>
     </select>
 
-    <textarea class="form-control mb-1"
+    <textarea class="form-control mb-2"
       placeholder="Description"
       onchange="problems[${i}].description=this.value"></textarea>
 
     <input type="file" class="form-control" multiple
       onchange="problems[${i}].images=this.files" />
+
+    <div class="hint">Tip: Add mark on PDF after selecting issue type.</div>
   `;
   document.getElementById("problems").appendChild(div);
 };
@@ -937,6 +536,30 @@ function handleIssue(i, v) {
     document.getElementById(`crack_${i}`).classList.remove("d-none");
     document.getElementById(`damp_${i}`).classList.remove("d-none");
   }
+
+  // optional: leakage doesn't need dampnessLevel
+  if (v === "dampness_leakage") {
+    document.getElementById(`damp_${i}`).classList.remove("d-none");
+  }
+}
+
+/* ================= COLOR HELPERS ================= */
+function getColor(type) {
+  return type === "crack" ? "red"
+    : type === "dampness" ? "green"
+    : type === "crack_dampness" ? "brown"
+    : type === "leakage" ? "blue"
+    : type === "dampness_leakage" ? "pink"
+    : "black";
+}
+
+function getPdfRgb(color) {
+  return color === "red" ? PDFLib.rgb(1, 0, 0)
+    : color === "green" ? PDFLib.rgb(0, 1, 0)
+    : color === "blue" ? PDFLib.rgb(0, 0, 1)
+    : color === "brown" ? PDFLib.rgb(0.6, 0.3, 0.1)
+    : color === "pink" ? PDFLib.rgb(1, 0.4, 0.7)
+    : PDFLib.rgb(0, 0, 0);
 }
 
 /* ================= PDF RENDER ================= */
@@ -950,13 +573,18 @@ async function renderPage() {
   const ctx = pdfCanvas.getContext("2d");
   await page.render({ canvasContext: ctx, viewport }).promise;
 
-  marks.forEach(m => {
+  // Draw marks with numbering
+  marks.forEach((m, index) => {
     if (m.pageIndex === pageIndex) {
       ctx.beginPath();
       ctx.arc(m.x, m.y, 8, 0, Math.PI * 2);
       ctx.strokeStyle = m.color;
       ctx.lineWidth = 2;
       ctx.stroke();
+
+      ctx.fillStyle = m.color;
+      ctx.font = "14px Inter";
+      ctx.fillText(index + 1, m.x + 10, m.y - 10);
     }
   });
 
@@ -990,13 +618,6 @@ function prevPage() {
   }
 }
 
-function getColor(type) {
-  return type === "crack" ? "red"
-    : type === "dampness" ? "blue"
-    : type === "crack_dampness" ? "green"
-    : "black";
-}
-
 /* ================= SUBMIT ISSUE ================= */
 async function submitIssue() {
   if (!problems.length) return alert("Add at least one structure");
@@ -1005,17 +626,24 @@ async function submitIssue() {
   const pdf = await PDFLib.PDFDocument.load(bytes);
   const pages = pdf.getPages();
 
-  marks.forEach(m => {
+  marks.forEach((m, index) => {
+    const color = getPdfRgb(m.color);
+
+    // draw circle
     pages[m.pageIndex].drawCircle({
       x: m.x / scale,
       y: (pdfCanvas.height - m.y) / scale,
       size: 8,
       borderWidth: 2,
-      borderColor:
-        m.color === "red" ? PDFLib.rgb(1,0,0) :
-        m.color === "blue" ? PDFLib.rgb(0,0,1) :
-        m.color === "green" ? PDFLib.rgb(0,1,0) :
-        PDFLib.rgb(0,0,0)
+      borderColor: color
+    });
+
+    // draw number
+    pages[m.pageIndex].drawText(String(index + 1), {
+      x: m.x / scale + 10,
+      y: (pdfCanvas.height - m.y) / scale + 5,
+      size: 12,
+      color: color
     });
   });
 
@@ -1041,276 +669,7 @@ async function submitIssue() {
 
   output.textContent = await res.text();
 }
-</script> -->
-
-<script>
-  
-/* ================= CONFIG ================= */
-const API = "http://localhost:5000";
-const token = localStorage.getItem("token");
-
-if (!token) location.href = "../login.html";
-
-/* ================= USER INFO ================= */
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-document.getElementById("floorText").innerText = "Floor: " + userInfo.floorNumber;
-document.getElementById("officeText").innerText = "Office: " + userInfo.officeNumber;
-
-/* ================= STATE ================= */
-let problems = []; // each problem has its own pdfMarks
-let pdfDocJs;
-let basePdfUrl;
-let pageIndex = 0;
-let scale = 1.4;
-
-/* ================= LOAD BASE PDF ================= */
-async function loadBasePdf() {
-  const res = await fetch(API + "/api/floor-plans/my", {
-    headers: { Authorization: "Bearer " + token }
-  });
-
-  if (!res.ok) return;
-
-  const data = await res.json();
-  if (!data.planPdf) return;
-
-  basePdfUrl = data.planPdf;
-  pdfDocJs = await pdfjsLib.getDocument(basePdfUrl).promise;
-  renderPage();
-}
-loadBasePdf();
-
-/* ================= STRUCTURE ================= */
-window.addProblem = function () {
-  const i = problems.length;
-
-  problems.push({
-    pdfMarks: [],
-    issueType: null,
-    crackType: null,
-    dampnessLevel: null
-  });
-
-  const div = document.createElement("div");
-  div.className = "problem";
-  div.innerHTML = `
-    <h6>Structure ${i + 1}</h6>
-
-    <select class="form-select mb-1"
-      onchange="problems[${i}].structureType=this.value">
-      <option value="">Structure</option>
-      <option>wall</option><option>beam</option><option>column</option>
-      <option>roof</option><option>floor</option><option>facade</option><option>other</option>
-    </select>
-
-    <select class="form-select mb-1"
-      onchange="problems[${i}].direction=this.value">
-      <option value="">Direction</option>
-      <option>north</option><option>south</option><option>east</option><option>west</option>
-    </select>
-
-    <select class="form-select mb-1"
-      onchange="handleIssue(${i}, this.value)">
-      <option value="">Issue</option>
-      <option value="crack">Crack</option>
-      <option value="dampness">Dampness</option>
-      <option value="crack_dampness">Crack + Dampness</option>
-      <option value="other">Other</option>
-    </select>
-
-    <!-- Crack Type -->
-    <select id="crack_${i}" class="form-select mb-1 d-none"
-      onchange="problems[${i}].crackType=this.value">
-      <option value="">Crack Type</option>
-      <option>minor</option>
-      <option>medium</option>
-      <option>severe</option>
-    </select>
-
-    <!-- Dampness Level -->
-    <select id="damp_${i}" class="form-select mb-1 d-none"
-      onchange="problems[${i}].dampnessLevel=this.value">
-      <option value="">Dampness Level</option>
-      <option>low</option>
-      <option>medium</option>
-      <option>high</option>
-    </select>
-
-    <select class="form-select mb-1"
-      onchange="problems[${i}].riskLevel=this.value">
-      <option value="">Risk Level</option>
-      <option>low</option><option>medium</option><option>high</option>
-    </select>
-
-    <textarea class="form-control mb-1"
-      placeholder="Description"
-      onchange="problems[${i}].description=this.value"></textarea>
-
-    <input type="file" class="form-control" multiple
-      onchange="problems[${i}].images=this.files" />
-  `;
-
-  document.getElementById("problems").appendChild(div);
-};
-
-function handleIssue(i, value) {
-  problems[i].issueType = value;
-
-  const crack = document.getElementById(`crack_${i}`);
-  const damp = document.getElementById(`damp_${i}`);
-
-  crack.classList.add("d-none");
-  damp.classList.add("d-none");
-
-  if (value === "crack") {
-    crack.classList.remove("d-none");
-  }
-
-  if (value === "dampness") {
-    damp.classList.remove("d-none");
-  }
-
-  if (value === "crack_dampness") {
-    crack.classList.remove("d-none");
-    damp.classList.remove("d-none");
-  }
-}
-
-
-
-
-
-/* ================= PDF RENDER ================= */
-async function renderPage() {
-  const page = await pdfDocJs.getPage(pageIndex + 1);
-  const viewport = page.getViewport({ scale });
-
-  pdfCanvas.width = viewport.width;
-  pdfCanvas.height = viewport.height;
-
-  const ctx = pdfCanvas.getContext("2d");
-  await page.render({ canvasContext: ctx, viewport }).promise;
-
-  // draw all marks per structure
-  problems.forEach(problem => {
-    problem.pdfMarks.forEach((m, index) => {
-      if (m.pageIndex === pageIndex) {
-        const x = m.x * viewport.width;
-        const y = m.y * viewport.height;
-
-        ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
-        ctx.strokeStyle = m.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = m.color;
-        ctx.font = "14px Arial";
-        ctx.fillText(index + 1, x + 10, y - 10);
-      }
-    });
-  });
-
-  pdfCanvas.onclick = e => {
-    if (!problems.length) return alert("Add structure first");
-
-    const rect = pdfCanvas.getBoundingClientRect();
-    const clickX = (e.clientX - rect.left) / rect.width;
-    const clickY = (e.clientY - rect.top) / rect.height;
-
-    const p = problems[problems.length - 1];
-    const color = getColor(p.issueType);
-
-    p.pdfMarks.push({
-      pageIndex,
-      x: clickX,
-      y: clickY,
-      color
-    });
-
-    renderPage();
-  };
-}
-
-function nextPage() {
-  if (pageIndex < pdfDocJs.numPages - 1) {
-    pageIndex++;
-    renderPage();
-  }
-}
-
-function prevPage() {
-  if (pageIndex > 0) {
-    pageIndex--;
-    renderPage();
-  }
-}
-
-function getColor(type) {
-  return type === "crack" ? "red"
-    : type === "dampness" ? "blue"
-    : type === "crack_dampness" ? "green"
-    : "black";
-}
-
-/* ================= SUBMIT ISSUE ================= */
-async function submitIssue() {
-  const bytes = await fetch(basePdfUrl).then(r => r.arrayBuffer());
-  const pdf = await PDFLib.PDFDocument.load(bytes);
-  const pages = pdf.getPages();
-
-  problems.forEach(problem => {
-    problem.pdfMarks.forEach((m, index) => {
-      const page = pages[m.pageIndex];
-      const { width, height } = page.getSize();
-
-      const x = m.x * width;
-      const y = height - (m.y * height);
-
-      const color =
-        m.color === "red" ? PDFLib.rgb(1,0,0) :
-        m.color === "blue" ? PDFLib.rgb(0,0,1) :
-        m.color === "green" ? PDFLib.rgb(0,1,0) :
-        PDFLib.rgb(0,0,0);
-
-      page.drawCircle({
-        x, y,
-        size: 8,
-        borderWidth: 2,
-        borderColor: color
-      });
-
-      page.drawText(String(index + 1), {
-        x: x + 10,
-        y: y + 5,
-        size: 12,
-        color
-      });
-    });
-  });
-
-  const edited = await pdf.save();
-  const fd = new FormData();
-
-  fd.append("structureProblems", JSON.stringify(problems));
-  fd.append("markedFloorPlan", new Blob([edited], { type: "application/pdf" }));
-
-  problems.forEach((p, i) => {
-    if (p.images) {
-      [...p.images].forEach(img => fd.append(`issueImages_${i}`, img));
-    }
-  });
-
-  await fetch(API + "/api/issues/create", {
-    method: "POST",
-    headers: { Authorization: "Bearer " + token },
-    body: fd
-  });
-
-  alert("Issue submitted successfully");
-}
 </script>
-
 
 </body>
 </html>

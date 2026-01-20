@@ -5,28 +5,18 @@ const mongoose = require("mongoose");
 // PDF mark for a structure problem
 const pdfMarkSchema = new mongoose.Schema(
   {
-    pageIndex: {
-      type: Number,
-      required: true,
-    },
-    x: {
-      type: Number,
-      required: true,
-    },
-    y: {
-      type: Number,
-      required: true,
-    },
+    pageIndex: { type: Number, required: true },
+    x: { type: Number, required: true },
+    y: { type: Number, required: true },
     color: {
       type: String,
-      enum: ["red", "blue", "green", "black"],
+      enum: ["red", "blue", "green", "brown", "pink", "black"],
       required: true,
     },
   },
   { _id: false }
 );
 
-// Each structural problem reported
 const structureProblemSchema = new mongoose.Schema(
   {
     structureType: {
@@ -37,13 +27,29 @@ const structureProblemSchema = new mongoose.Schema(
 
     direction: {
       type: String,
-      enum: ["north", "south", "east", "west"],
+      enum: [
+        "north",
+        "south",
+        "east",
+        "west",
+        "north-east",
+        "north-west",
+        "south-east",
+        "south-west",
+      ],
       required: true,
     },
 
     issueType: {
       type: String,
-      enum: ["crack", "dampness", "crack_dampness", "other"],
+      enum: [
+        "crack",
+        "dampness",
+        "crack_dampness",
+        "leakage",
+        "dampness_leakage",
+        "other",
+      ],
       required: true,
     },
 
@@ -56,10 +62,13 @@ const structureProblemSchema = new mongoose.Schema(
       type: String,
       enum: ["low", "medium", "high"],
       required: function () {
-        return this.issueType === "dampness" || this.issueType === "crack_dampness";
+        return (
+          this.issueType === "dampness" ||
+          this.issueType === "crack_dampness" ||
+          this.issueType === "dampness_leakage"
+        );
       },
     },
-
 
     riskLevel: {
       type: String,
@@ -67,25 +76,99 @@ const structureProblemSchema = new mongoose.Schema(
       required: true,
     },
 
-    description: {
-      type: String,
-      required: true,
-    },
+    description: { type: String, required: true },
 
-    images: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    images: [{ type: String, required: true }],
 
-    pdfMarks: {
-      type: [pdfMarkSchema],
-      default: [],
-    },
+    pdfMarks: { type: [pdfMarkSchema], default: [] },
   },
   { _id: false }
 );
+
+
+// const pdfMarkSchema = new mongoose.Schema(
+//   {
+//     pageIndex: {
+//       type: Number,
+//       required: true,
+//     },
+//     x: {
+//       type: Number,
+//       required: true,
+//     },
+//     y: {
+//       type: Number,
+//       required: true,
+//     },
+//     color: {
+//       type: String,
+//       enum: ["red", "blue", "green", "black"],
+//       required: true,
+//     },
+//   },
+//   { _id: false }
+// );
+
+// // Each structural problem reported
+// const structureProblemSchema = new mongoose.Schema(
+//   {
+//     structureType: {
+//       type: String,
+//       enum: ["wall", "beam", "column", "roof", "floor", "facade", "other"],
+//       required: true,
+//     },
+
+//     direction: {
+//       type: String,
+//       enum: ["north", "south", "east", "west"],
+//       required: true,
+//     },
+
+//     issueType: {
+//       type: String,
+//       enum: ["crack", "dampness", "crack_dampness", "leakage","dampness_leakage","other"],
+//       required: true,
+//     },
+
+//     crackType: {
+//       type: String,
+//       enum: ["minor", "medium", "severe"],
+//     },
+
+//     dampnessLevel: {
+//       type: String,
+//       enum: ["low", "medium", "high"],
+//       required: function () {
+//         return this.issueType === "dampness" || this.issueType === "crack_dampness" || this.issueType === "leakage" || this.issueType === "dampness_leakage" ;
+//       },
+//     },
+
+
+//     riskLevel: {
+//       type: String,
+//       enum: ["low", "medium", "high"],
+//       required: true,
+//     },
+
+//     description: {
+//       type: String,
+//       required: true,
+//     },
+
+//     images: [
+//       {
+//         type: String,
+//         required: true,
+//       },
+//     ],
+
+//     pdfMarks: {
+//       type: [pdfMarkSchema],
+//       default: [],
+//     },
+//   },
+//   { _id: false }
+// );
 
 /* ================= MAIN ISSUE SCHEMA ================= */
 
@@ -132,7 +215,7 @@ const issueSchema = new mongoose.Schema(
 
     wallDirection: {
       type: String,
-      enum: ["north", "south", "east", "west"],
+      enum: ["north", "south", "east", "west","north-west","north-east","south-east","south-west"],
     },
 
     wallLocationRef: {

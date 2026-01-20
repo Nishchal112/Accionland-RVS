@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Accnioland – Manager Dashboard</title>
+  <title>AccionLAND – Manager Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Bootstrap -->
@@ -22,8 +22,9 @@
     }
 
     /* NAVBAR */
+    /* 2563eb */
     .topbar{
-      background: linear-gradient(90deg,#0b5ed7,#2563eb);
+      background: linear-gradient(90deg,#2f6dcb,#2f6dcb);
       box-shadow: 0 12px 30px rgba(2,6,23,0.18);
       border-bottom: 1px solid rgba(255,255,255,0.15);
     }
@@ -35,6 +36,22 @@
       align-items:center;
       gap:10px;
     }
+
+    /* ✅ LOGO */
+    /* .brand-logo{
+      height: 34px;
+      width: auto;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      padding: 2px;
+    } */
+     .brand-logo{
+  height: 50px;   /* 🔥 change this value for size */
+  width: auto;    /* keeps logo ratio */
+  border-radius: 8px;
+  object-fit: contain;
+}
+
 
     /* GRID LAYOUT */
     .dashboard-wrap{
@@ -484,8 +501,10 @@
 
 <!-- NAVBAR -->
 <nav class="navbar navbar-dark px-3 topbar">
-  <span class="navbar-brand fw-semibold">
-    <i class="bi bi-buildings-fill"></i> Accnioland – Survey Analytics
+  <span class="navbar-brand fw-semibold d-flex align-items-center gap-2">
+    <!-- ✅ LOGO (Change Path If Needed) -->
+    <img src="./logo.png" alt="AccionLAND Logo" class="brand-logo" />
+    AccionLAND – RVS
   </span>
 
   <div class="d-flex gap-2">
@@ -509,10 +528,17 @@
         </div>
 
         <div class="sidebar-body">
+
+          <!-- ✅ UPDATED FLOOR FILTER (SHORT INPUT) -->
           <div class="mb-3">
-            <label class="form-label fw-semibold">Floor Number</label>
-            <input type="number" id="floorInput" class="form-control" placeholder="e.g. 2" />
-            <div class="helper-text">Leave Empty To View All Floors</div>
+            <label class="form-label fw-semibold">Floor</label>
+            <input
+              type="text"
+              id="floorInput"
+              class="form-control"
+              placeholder="e.g. 1, 2, B1, GF"
+            />
+            <div class="helper-text">Type: 1, 2, 3... | B1, B2... | GF</div>
           </div>
 
           <div class="mb-3">
@@ -660,6 +686,34 @@ const userType = localStorage.getItem("userType");
 
 let ALL_ISSUES = [];
 
+/* ================= FLOOR LABEL + SHORT PARSER ================= */
+function getFloorLabel(floorNumber){
+  if (floorNumber === -1) return "Basement 1";
+  if (floorNumber === 0) return "Ground Floor";
+  return `Floor ${floorNumber}`;
+}
+
+// ✅ SHORT INPUT SUPPORT: 1, 2, B1, GF
+function parseFloorInput(input){
+  if (!input) return null;
+
+  const text = String(input).trim().toUpperCase();
+
+  // Ground Floor
+  if (text === "GF") return 0;
+
+  // Basement floors: B1 => -1, B2 => -2
+  if (text.startsWith("B")) {
+    const num = text.replace(/[^0-9]/g, "");
+    if (num) return -Number(num);
+  }
+
+  // Normal floors: 1 => 1, 2 => 2
+  if (!isNaN(Number(text))) return Number(text);
+
+  return null;
+}
+
 /* ================= AUTH GUARD ================= */
 if (!token || userType !== "manager") {
   localStorage.clear();
@@ -694,22 +748,27 @@ async function loadIssues() {
 
 /* ================= APPLY FILTER ================= */
 function applyFilter() {
-  const floor = document.getElementById("floorInput").value;
+  const floorText = document.getElementById("floorInput").value;
   const date = document.getElementById("dateInput").value;
+
+  const floorNumber = parseFloorInput(floorText);
 
   let filtered = [...ALL_ISSUES];
 
-  if (floor) filtered = filtered.filter(i => i.floorNumber === Number(floor));
+  if (floorNumber !== null) {
+    filtered = filtered.filter(i => i.floorNumber === Number(floorNumber));
+  }
+
   if (date) filtered = filtered.filter(i => i.createdAt?.startsWith(date));
 
   updateDashboardUIFromFilteredIssues(filtered);
   renderSingleSurvey(filtered);
 
   let label = "Showing: ";
-  if (!floor && !date) label += "All Surveys";
+  if (floorNumber === null && !date) label += "All Surveys";
   else {
-    if (floor) label += `Floor ${floor}`;
-    if (floor && date) label += " • ";
+    if (floorNumber !== null) label += getFloorLabel(Number(floorNumber));
+    if (floorNumber !== null && date) label += " • ";
     if (date) label += `Date ${date}`;
   }
   document.getElementById("activeFilterText").innerText = label;
@@ -747,9 +806,8 @@ function renderSingleSurvey(list) {
 
 /* ================= MAP VIEW PDF ================= */
 function showPdfInMap(url, floor){
-  document.getElementById("mapLabel").innerText = `Floor ${floor}`;
+  document.getElementById("mapLabel").innerText = getFloorLabel(Number(floor));
 
-  // show button
   const btn = document.getElementById("openFullMapBtn");
   btn.href = url;
   btn.classList.remove("d-none");
