@@ -14,10 +14,6 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-</script>
 
   <style>
     body{
@@ -594,115 +590,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     right: -100%;
   }
 }
-/* ================= VENDOR MODAL ================= */
 
-.vendor-modal{
-  position: fixed;
-  inset: 0;
-  background: rgba(15,23,42,0.55);
-  backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1100;
-  animation: fadeIn 0.2s ease;
-}
-
-.vendor-modal.show{
-  display: flex;
-}
-
-.vendor-modal-content{
-  width: 90%;
-  max-width: 1000px;
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 30px 60px rgba(15,23,42,0.25);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.vendor-header{
-  padding: 16px 20px;
-  border-bottom: 1px solid #eef2f7;
-  display:flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(180deg,#f8fafc,#ffffff);
-}
-
-/* .vendor-body{
-  padding: 20px;
-  max-height: 70vh;
-  overflow-y: auto;
-} */
- .vendor-body{
-  padding: 20px;
-  flex: 1;
-  overflow-y: auto;
-}
-
-.vendor-search{
-  margin-bottom: 18px;
-}
-
-.vendor-grid{
-  display:grid;
-  grid-template-columns: repeat(2,1fr);
-  gap:16px;
-}
-
-@media(max-width:768px){
-  .vendor-grid{
-    grid-template-columns: 1fr;
-  }
-}
-
-.vendor-card{
-  border:1px solid #eef2f7;
-  border-radius:18px;
-  padding:16px;
-  background: linear-gradient(180deg,#ffffff,#f8fafc);
-  box-shadow:0 10px 22px rgba(15,23,42,0.06);
-  transition:0.25s ease;
-}
-
-.vendor-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 20px 35px rgba(15,23,42,0.12);
-}
-
-.vendor-name{
-  font-weight:900;
-  font-size:16px;
-  margin-bottom:6px;
-}
-
-.vendor-service{
-  font-size:14px;
-  font-weight:700;
-  color:#0b5ed7;
-}
-
-.vendor-info{
-  font-size:13px;
-  margin-top:8px;
-  color:#475569;
-  font-weight:600;
-}
-body.modal-open {
-  overflow: hidden;
-}
-.bi-pencil-square:hover{
-  color:#0b5ed7;
-  transform: scale(1.1);
-}
-
-.bi-trash-fill:hover{
-  color:#dc3545;
-  transform: scale(1.1);
-}
   </style>
 </head>
 
@@ -725,9 +613,6 @@ body.modal-open {
       <button class="btn btn-light btn-sm fw-semibold" onclick="toggleFloorDrawer()">
       <i class="bi bi-grid-fill"></i> Floors Summary
     </button>
-    <button class="btn btn-light btn-sm fw-semibold" onclick="openVendorModal()">
-  <i class="bi bi-people-fill"></i> Vendors
-</button>
     <a href="upload-floor.html" class="btn btn-light btn-sm fw-semibold">
       <i class="bi bi-upload"></i> Upload Floor Plan
     </a>
@@ -1554,101 +1439,7 @@ function renderSideStatsBox(elementId, statsObj) {
 loadIssues();
 </script>
 
-<!-- ================= VENDOR MODAL ================= -->
-<div id="vendorModal" class="vendor-modal">
-  <div class="vendor-modal-content">
-
-    <div class="vendor-header">
-      <h5><i class="bi bi-people-fill text-primary"></i> Approved Vendors</h5>
-     <div class="d-flex gap-2 align-items-center">
-
-  <!-- ➕ Add Vendor -->
-  <button class="btn btn-sm btn-success" onclick="openVendorForm()">
-    <i class="bi bi-plus-lg"></i> Add Vendor
-  </button>
-
-  <!-- 🖨 Print -->
-  <button class="btn btn-sm btn-primary" onclick="printVendorList()">
-    <i class="bi bi-printer-fill"></i> Print PDF
-  </button>
-
-  <!-- Close -->
-  <button class="btn btn-sm btn-light" onclick="closeVendorModal()">✕</button>
-
-</div>
-    </div>
-
-    <!-- <div class="vendor-body">
-      <div class="vendor-search">
-        <input type="text" id="vendorSearch" class="form-control"
-          placeholder="Search vendor by name or service..."
-          onkeyup="filterVendors()"/>
-      </div>
-
-      <div id="vendorListContainer" class="vendor-grid"></div>
-    </div> -->
-<div class="vendor-body">
-
-  <!-- 🔍 Search -->
-  <div class="vendor-search">
-    <input type="text" id="vendorSearch" class="form-control"
-      placeholder="Search vendor by name or service..."
-      onkeyup="filterVendors()"/>
-  </div>
-
-  <!-- 🟢 Small Add/Edit Form -->
-<!-- ================= SMALL VENDOR FORM MODAL ================= -->
-<div id="vendorFormModal" class="vendor-modal">
-
-  <div class="vendor-modal-content" style="max-width:500px;">
-
-    <div class="vendor-header">
-      <h6 class="fw-bold mb-0" id="vendorFormTitle">Add Vendor</h6>
-      <button class="btn btn-sm btn-light" onclick="closeVendorForm()">✕</button>
-    </div>
-
-    <div class="vendor-body">
-
-      <div class="mb-2">
-        <input type="text" id="vendorName" class="form-control" placeholder="Vendor Name">
-      </div>
-
-      <div class="mb-2">
-        <input type="text" id="vendorService" class="form-control" placeholder="Service">
-      </div>
-
-      <div class="mb-2">
-        <input type="text" id="vendorPhone" class="form-control" placeholder="Phone">
-      </div>
-
-      <div class="mb-2">
-        <input type="email" id="vendorEmail" class="form-control" placeholder="Email">
-      </div>
-
-      <div class="mb-3">
-        <input type="number" step="0.1" min="1" max="5"
-          id="vendorRating" class="form-control"
-          placeholder="Rating (1-5)">
-      </div>
-
-      <div class="d-grid">
-        <button class="btn btn-success btn-sm" onclick="saveVendor()">
-          Save Vendor
-        </button>
-      </div>
-
-    </div>
-
-  </div>
-</div>
-
-  <!-- 📋 Vendor List -->
-  <div id="vendorListContainer" class="vendor-grid"></div>
-
-</div>
-  </div>
-</div>
-
+</body>
 <!-- FLOOR DRAWER -->
 <div id="floorDrawer" class="floor-drawer">
   <div class="floor-drawer-content">
@@ -1663,8 +1454,4 @@ loadIssues();
   </div>
 </div>
 
-<!-- Vendor Script MUST be last -->
-<script src="./vender.js"></script>
-
-</body>
 </html>

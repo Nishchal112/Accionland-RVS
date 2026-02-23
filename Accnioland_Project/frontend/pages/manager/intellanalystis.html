@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AccionLAND – Intelligent Analysis (PDF)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Segoe UI}
+body{margin:0;background:#f4f6fa}
+
+/* TOP BAR */
+.navbar{
+  background:#1f4fd8;
+  color:#fff;
+  padding:14px 22px;
+  font-size:18px;
+  font-weight:600;
+}
+
+/* LAYOUT */
+.container{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:16px;
+  padding:16px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  background:#fff;
+  border-radius:10px;
+  padding:14px;
+}
+.sidebar h3{margin-top:0;font-size:16px}
+.sidebar label{font-size:13px;color:#555}
+.sidebar select{
+  width:100%;
+  padding:6px;
+  margin:6px 0 14px;
+}
+
+/* MAIN */
+.main{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* PDF */
+.pdf-card{
+  background:#fff;
+  border-radius:10px;
+  padding:14px;
+}
+.pdf-title{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+.pdf-wrapper{
+  position:relative;
+}
+canvas{
+  width:100%;
+  border-radius:8px;
+}
+.overlay{
+  position:absolute;
+  top:0;
+  left:0;
+}
+
+/* CLUSTERS */
+.cluster{
+  position:absolute;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:18px;
+  font-weight:bold;
+  pointer-events:none;
+}
+.high{background:rgba(220,53,69,.7)}
+.medium{background:rgba(255,193,7,.7)}
+
+/* DETAILS */
+.details{
+  background:#fff;
+  border-radius:10px;
+  padding:14px;
+}
+.details h2{margin-top:0}
+.cluster-block{
+  border-left:4px solid #1f4fd8;
+  padding-left:12px;
+  margin-bottom:20px;
+}
+.spot{
+  background:#f6f8fc;
+  padding:10px;
+  border-radius:6px;
+  margin-bottom:8px;
+}
+.spot small{color:#666}
+
+@media(max-width:900px){
+  .container{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">AccionLAND RVS – Intelligent Analysis</div>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h3>Filters</h3>
+  <label>Floor</label>
+  <select>
+    <option>Floor 3</option>
+  </select>
+  <label>Analysis</label>
+  <select>
+    <option>Intelligent Analysis</option>
+  </select>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="pdf-card">
+  <div class="pdf-title">Survey Map – Dense Clusters (PDF)</div>
+  <div class="pdf-wrapper">
+    <canvas id="pdfCanvas"></canvas>
+    <div id="overlay" class="overlay"></div>
+  </div>
+</div>
+
+<div class="details">
+  <h2>Cluster-wise Spot History</h2>
+  <div id="clusterDetails"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+/* ================= PDF CONFIG ================= */
+const pdfUrl = "floor3.pdf";
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+
+const canvas = document.getElementById("pdfCanvas");
+const ctx = canvas.getContext("2d");
+const overlay = document.getElementById("overlay");
+
+/* ================= SAMPLE DATA ================= */
+const spots = [
+  {floor:3,structure:"beam",direction:"north",x:410,y:290,issue:"dampness",date:"2026-01-10",solution:"Chemical Coating"},
+  {floor:3,structure:"beam",direction:"north",x:418,y:294,issue:"dampness",date:"2026-01-17",solution:"Chemical Coating"},
+  {floor:3,structure:"beam",direction:"north",x:423,y:291,issue:"dampness",date:"2026-01-23",solution:null},
+  {floor:3,structure:"wall",direction:"north",x:620,y:340,issue:"crack",date:"2026-01-15",solution:"Epoxy Injection"},
+  {floor:3,structure:"wall",direction:"north",x:630,y:350,issue:"crack",date:"2026-01-22",solution:null}
+];
+
+const RADIUS = 30;
+let clusters = [];
+
+/* ================= LOAD PDF ================= */
+pdfjsLib.getDocument(pdfUrl).promise.then(pdf=>{
+  pdf.getPage(1).then(page=>{
+    const viewport = page.getViewport({ scale: 1.5 });
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    overlay.style.width = canvas.width+"px";
+    overlay.style.height = canvas.height+"px";
+
+    page.render({ canvasContext: ctx, viewport });
+    clusterSpots();
+  });
+});
+
+/* ================= CLUSTER LOGIC ================= */
+function dist(a,b){
+  return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
+}
+
+function clusterSpots(){
+  spots.forEach(s=>{
+    let found=false;
+    clusters.forEach(c=>{
+      if(c.structure===s.structure && dist(c.center,s)<=RADIUS){
+        c.spots.push(s);
+        found=true;
+      }
+    });
+    if(!found){
+      clusters.push({
+        id:"C"+(clusters.length+1),
+        center:{x:s.x,y:s.y},
+        structure:s.structure,
+        spots:[s]
+      });
+    }
+  });
+  renderClusters();
+}
+
+/* ================= RENDER ================= */
+function renderClusters(){
+  const details=document.getElementById("clusterDetails");
+
+  clusters.forEach(c=>{
+    const div=document.createElement("div");
+    div.className="cluster "+(c.spots.length>=3?"high":"medium");
+    div.innerText=c.id;
+    div.style.left=c.center.x+"px";
+    div.style.top=c.center.y+"px";
+    overlay.appendChild(div);
+
+    let html=`<div class="cluster-block">
+      <h3>${c.id} – ${c.structure.toUpperCase()}</h3>
+      <p>Total Spots: ${c.spots.length}</p>`;
+
+    c.spots.forEach((s,i)=>{
+      let next=c.spots[i+1];
+      let worked=next?Math.floor((new Date(next.date)-new Date(s.date))/(1000*3600*24))+" days":"Failed";
+      html+=`<div class="spot">
+        <strong>${s.date} – ${s.issue}</strong><br>
+        Solution: ${s.solution||"—"}<br>
+        <small>Worked for: ${worked}</small>
+      </div>`;
+    });
+
+    html+="</div>";
+    details.innerHTML+=html;
+  });
+}
+</script>
+
+</body>
+</html>

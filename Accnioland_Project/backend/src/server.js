@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 // const analyticsRoutes = require("./routes/analyticsRoutes");
+const vendorRoutes = require("./routes/VendorRoutes.js");
+
 
 require("dotenv").config({
   path: path.resolve(__dirname, "../.env"),
@@ -20,6 +22,8 @@ app.use("/api/issues", require("./routes/issueRoutes"));
 // app.use("/api/analytics", analyticsRoutes);
 app.use("/api/floor-plans", require("./routes/floorPlanRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
+app.use("/api/vendors", vendorRoutes);
+
 
 
 const PORT = process.env.PORT || 5000;
